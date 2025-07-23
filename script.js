@@ -69,25 +69,20 @@ function renderChart(incomeAmount, expenseAmount) {
   const ctx = document.getElementById('pieChart').getContext('2d');
   if (pieChart) pieChart.destroy(); // clear chart if exists
 
-  pieChart = new Chart(ctx, {
-    type: 'pie',
-    data: {
-      labels: ['Income', 'Expense'],
-      datasets: [{
-        data: [incomeAmount, expenseAmount],
-        backgroundColor: ['#28a745', '#dc3545'],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'bottom'
-        }
-      }
+pieChart = new Chart(ctx, {
+  type: 'pie',
+  data: { ... },
+  options: {
+  responsive: true,
+  maintainAspectRatio: false, // penting untuk scaling fleksibel
+  plugins: {
+    legend: {
+      position: 'bottom'
     }
-  });
+  }
+}
+});
+
 }
 const themeToggle = document.getElementById('theme-toggle');
 const userPref = localStorage.getItem('theme');
