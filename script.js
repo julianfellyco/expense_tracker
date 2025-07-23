@@ -5,33 +5,27 @@ const list = document.getElementById('list');
 const balance = document.getElementById('balance');
 const income = document.getElementById('income');
 const expense = document.getElementById('expense');
+const themeToggle = document.getElementById('theme-toggle');
 
 let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+let pieChart;
 
-function updateUI() {
-  list.innerHTML = '';
-  let total = 0, totalIncome = 0, totalExpense = 0;
-
-  transactions.forEach((tx, index) => {
-    const li = document.createElement('li');
-    li.classList.add(tx.amount > 0 ? 'income' : 'expense', 'fade-slide');
-    li.innerHTML = `
-      ${tx.desc} <span>Rp${tx.amount}</span>
-      <button onclick="removeTx(${index})" style="background:none;border:none;color:#888;cursor:pointer;">❌</button>
-    `;
-    list.appendChild(li);
-
-    total += tx.amount;
-    if (tx.amount > 0) totalIncome += tx.amount;
-    else totalExpense += Math.abs(tx.amount);
-  });
-
-  animateNumber(balance, parseInt(balance.textContent.replace(/\D/g,'')) || 0, total);
-  animateNumber(income, parseInt(income.textContent.replace(/\D/g,'')) || 0, totalIncome);
-  animateNumber(expense, parseInt(expense.textContent.replace(/\D/g,'')) || 0, totalExpense);
-  renderChart(totalIncome, totalExpense);
-  localStorage.setItem('transactions', JSON.stringify(transactions));
+// Load theme preference
+const userPref = localStorage.getItem('theme');
+if (userPref === 'dark') {
+  document.body.classList.add('dark');
+  themeToggle.textContent = '🌞 Light Mode';
 }
+
+themeToggle.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  themeToggle.textContent = isDark ? '🌞 Light Mode' : '🌙 Dark Mode';
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+});
+
+addBtn.addEventListener('click', addTx);
+window.addEventListener('load', updateUI);
 
 function addTx() {
   const descVal = desc.value.trim();
@@ -49,8 +43,34 @@ function removeTx(index) {
   updateUI();
 }
 
-addBtn.addEventListener('click', addTx);
-window.addEventListener('load', updateUI);
+function updateUI() {
+  list.innerHTML = '';
+  let total = 0, totalIncome = 0, totalExpense = 0;
+
+  transactions.forEach((tx, index) => {
+    const li = document.createElement('li');
+    li.className = `
+      flex justify-between items-center bg-gray-100 dark:bg-gray-700 text-black dark:text-white 
+      p-2 rounded transition-colors duration-300 fade-slide
+    `;
+    li.innerHTML = `
+      ${tx.desc} <span>Rp${tx.amount}</span>
+      <button onclick="removeTx(${index})" class="ml-2 text-gray-500 hover:text-red-500">❌</button>
+    `;
+    list.appendChild(li);
+
+    total += tx.amount;
+    if (tx.amount > 0) totalIncome += tx.amount;
+    else totalExpense += Math.abs(tx.amount);
+  });
+
+  animateNumber(balance, parseInt(balance.textContent.replace(/\D/g, '')) || 0, total);
+  animateNumber(income, parseInt(income.textContent.replace(/\D/g, '')) || 0, totalIncome);
+  animateNumber(expense, parseInt(expense.textContent.replace(/\D/g, '')) || 0, totalExpense);
+
+  renderChart(totalIncome, totalExpense);
+  localStorage.setItem('transactions', JSON.stringify(transactions));
+}
 
 function animateNumber(el, start, end, duration = 300) {
   let startTime = null;
@@ -63,46 +83,32 @@ function animateNumber(el, start, end, duration = 300) {
   };
   requestAnimationFrame(step);
 }
-let pieChart;
 
 function renderChart(incomeAmount, expenseAmount) {
   const ctx = document.getElementById('pieChart').getContext('2d');
   if (pieChart) pieChart.destroy(); // clear chart if exists
 
-      pieChart = new Chart(ctx, {
+  pieChart = new Chart(ctx, {
     type: 'pie',
-     data: {
-  labels: ['Income', 'Expense'],
-  datasets: [{
-    data: [incomeAmount, expenseAmount],
-    backgroundColor: ['#16a34a', '#dc2626'], // hijau dan merah
-    borderWidth: 1
-  }]
-},
- },
+    data: {
+      labels: ['Income', 'Expense'],
+      datasets: [{
+        data: [incomeAmount, expenseAmount],
+        backgroundColor: ['#16a34a', '#dc2626'],
+        borderWidth: 1
+      }]
+    },
     options: {
-    responsive: true,
-    maintainAspectRatio: false, // penting untuk scaling fleksibel
-    plugins: {
-      legend: {
-        position: 'bottom'
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: document.body.classList.contains('dark') ? 'white' : 'black'
+          }
+        }
       }
     }
+  });
 }
-});
-
-}
-const themeToggle = document.getElementById('theme-toggle');
-const userPref = localStorage.getItem('theme');
-if (userPref === 'dark') {
-  document.body.classList.add('dark');
-  themeToggle.textContent = '🌞 Light Mode';
-}
-
-themeToggle.addEventListener('click', () => {
-  document.body.classList.toggle('dark');
-  const isDark = document.body.classList.contains('dark');
-  themeToggle.textContent = isDark ? '🌞 Light Mode' : '🌙 Dark Mode';
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
-});
-
