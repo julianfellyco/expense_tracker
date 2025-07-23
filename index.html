@@ -4,37 +4,59 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Julian's Expense Tracker</title>
-  <link rel="stylesheet" href="style.css" />
+   <script>
+  tailwind.config = {
+    darkMode: 'class'
+  }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
-<body>
-  <div class="container">
-    <h1>💸 Expense Tracker</h1>
-    <h2>Balance: <span id="balance">Rp0</span></h2>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-white transition-colors duration-300">
 
-    <div class="income-expense">
-      <div>
-        <h3>Income</h3>
-        <p id="income">Rp0</p>
+  <button id="theme-toggle" class="absolute top-4 right-4 bg-gray-200 dark:bg-gray-700 text-sm px-3 py-1 rounded">
+    🌙 Dark Mode
+  </button>
+
+  <main class="max-w-md mx-auto mt-16 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+    <h1 class="text-2xl font-bold text-center mb-4 text-blue-600">💸 Expense Tracker</h1>
+
+    <!-- Balance -->
+    <div class="text-center mb-4">
+      <h2 class="text-lg font-semibold">Your Balance</h2>
+      <h3 id="balance" class="text-2xl font-bold">Rp0</h3>
+    </div>
+
+    <!-- Income & Expense -->
+    <div class="flex justify-between mb-4">
+      <div class="bg-green-100 dark:bg-green-800 p-4 rounded w-1/2 mr-2 text-center">
+        <h4>Income</h4>
+        <p id="income" class="text-green-600 dark:text-green-300 font-semibold">Rp0</p>
       </div>
-      <div>
-        <h3>Expense</h3>
-        <p id="expense">Rp0</p>
+      <div class="bg-red-100 dark:bg-red-800 p-4 rounded w-1/2 text-center">
+        <h4>Expense</h4>
+        <p id="expense" class="text-red-600 dark:text-red-300 font-semibold">Rp0</p>
       </div>
     </div>
 
-    <div class="form">
-      <input type="text" id="desc" placeholder="Description" />
-      <input type="number" id="amount" placeholder="Amount (+/-)" />
-      <button id="add">Add Transaction</button>
-    </div>
+    <!-- Form -->
+    <form id="form" class="mb-4">
+      <input type="text" id="text" placeholder="Transaction name" class="w-full mb-2 p-2 rounded border dark:bg-gray-700 dark:border-gray-500 dark:text-white">
+      <input type="number" id="amount" placeholder="Amount (e.g. -500 or 1000)" class="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-500 dark:text-white">
+      <button class="mt-2 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition">Add Transaction</button>
+    </form>
 
-    <ul id="list"></ul>
-  </div>
+    <!-- Transaction List -->
+    <ul id="list" class="mb-6 space-y-2">
+      <!-- Items go here -->
+    </ul>
+
+    <!-- Chart -->
+    <canvas id="pieChart" width="300" height="300"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </main>
 
   <script src="script.js"></script>
-  <h2 style="text-align:center">Overview</h2>
-<canvas id="pieChart" width="300" height="300"></canvas>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </body>
+
 </html>
