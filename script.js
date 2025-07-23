@@ -26,9 +26,10 @@ function updateUI() {
     else totalExpense += Math.abs(tx.amount);
   });
 
-  balance.textContent = `Rp${total}`;
-  income.textContent = `Rp${totalIncome}`;
-  expense.textContent = `Rp${totalExpense}`;
+  animateNumber(balance, parseInt(balance.textContent.replace(/\D/g,'')) || 0, total);
+  animateNumber(income, parseInt(income.textContent.replace(/\D/g,'')) || 0, totalIncome);
+  animateNumber(expense, parseInt(expense.textContent.replace(/\D/g,'')) || 0, totalExpense);
+
   localStorage.setItem('transactions', JSON.stringify(transactions));
 }
 
