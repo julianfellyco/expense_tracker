@@ -14,7 +14,7 @@ function updateUI() {
 
   transactions.forEach((tx, index) => {
     const li = document.createElement('li');
-    li.classList.add(tx.amount > 0 ? 'income' : 'expense');
+    li.classList.add(tx.amount > 0 ? 'income' : 'expense', 'fade-slide');
     li.innerHTML = `
       ${tx.desc} <span>Rp${tx.amount}</span>
       <button onclick="removeTx(${index})" style="background:none;border:none;color:#888;cursor:pointer;">❌</button>
