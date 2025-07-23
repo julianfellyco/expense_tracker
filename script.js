@@ -50,3 +50,16 @@ function removeTx(index) {
 
 addBtn.addEventListener('click', addTx);
 window.addEventListener('load', updateUI);
+
+function animateNumber(el, start, end, duration = 300) {
+  let startTime = null;
+  const step = (timestamp) => {
+    if (!startTime) startTime = timestamp;
+    const progress = Math.min((timestamp - startTime) / duration, 1);
+    const value = Math.floor(progress * (end - start) + start);
+    el.textContent = `Rp${value}`;
+    if (progress < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
