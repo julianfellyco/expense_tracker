@@ -29,7 +29,7 @@ function updateUI() {
   animateNumber(balance, parseInt(balance.textContent.replace(/\D/g,'')) || 0, total);
   animateNumber(income, parseInt(income.textContent.replace(/\D/g,'')) || 0, totalIncome);
   animateNumber(expense, parseInt(expense.textContent.replace(/\D/g,'')) || 0, totalExpense);
-
+  renderChart(totalIncome, totalExpense);
   localStorage.setItem('transactions', JSON.stringify(transactions));
 }
 
@@ -62,5 +62,31 @@ function animateNumber(el, start, end, duration = 300) {
     if (progress < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
+}
+let pieChart;
+
+function renderChart(incomeAmount, expenseAmount) {
+  const ctx = document.getElementById('pieChart').getContext('2d');
+  if (pieChart) pieChart.destroy(); // clear chart if exists
+
+  pieChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Income', 'Expense'],
+      datasets: [{
+        data: [incomeAmount, expenseAmount],
+        backgroundColor: ['#28a745', '#dc3545'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
 }
 
