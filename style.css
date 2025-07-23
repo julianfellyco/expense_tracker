@@ -84,3 +84,19 @@ button:active {
   transform: scale(0.95);
 }
 
+@keyframes fadeSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-slide {
+  animation: fadeSlide 0.3s ease forwards;
+}
+
+
