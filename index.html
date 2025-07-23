@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Julian's Expense Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>💸 Expense Tracker</h1>
+    <h2>Balance: <span id="balance">Rp0</span></h2>
+
+    <div class="income-expense">
+      <div>
+        <h3>Income</h3>
+        <p id="income">Rp0</p>
+      </div>
+      <div>
+        <h3>Expense</h3>
+        <p id="expense">Rp0</p>
+      </div>
+    </div>
+
+    <div class="form">
+      <input type="text" id="desc" placeholder="Description" />
+      <input type="number" id="amount" placeholder="Amount (+/-)" />
+      <button id="add">Add Transaction</button>
+    </div>
+
+    <ul id="list"></ul>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
