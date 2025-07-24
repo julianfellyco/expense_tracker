@@ -1,18 +1,16 @@
-const desc = document.getElementById('desc');
+const desc = document.getElementById('text');
 const amount = document.getElementById('amount');
-const addBtn = document.getElementById('add');
 const list = document.getElementById('list');
 const balance = document.getElementById('balance');
 const income = document.getElementById('income');
 const expense = document.getElementById('expense');
 const themeToggle = document.getElementById('theme-toggle');
-
+const form = document.getElementById('form');
 let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 let pieChart;
 
 // Load theme preference
-const userPref = localStorage.getItem('theme');
-if (userPref === 'dark') {
+if (localStorage.getItem('theme') === 'dark') {
   document.body.classList.add('dark');
   themeToggle.textContent = '🌞 Light Mode';
 }
@@ -24,19 +22,21 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
 });
 
-addBtn.addEventListener('click', addTx);
-window.addEventListener('load', updateUI);
-
-function addTx() {
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
   const descVal = desc.value.trim();
   const amtVal = +amount.value;
 
-  if (descVal === '' || amount.value === '') return alert('Isi semua kolom!');
+  if (descVal === '' || isNaN(amtVal)) {
+    alert('Please enter valid data!');
+    return;
+  }
+
   transactions.push({ desc: descVal, amount: amtVal });
   desc.value = '';
   amount.value = '';
   updateUI();
-}
+});
 
 function removeTx(index) {
   transactions.splice(index, 1);
@@ -51,10 +51,10 @@ function updateUI() {
     const li = document.createElement('li');
     li.className = `
       flex justify-between items-center bg-gray-100 dark:bg-gray-700 text-black dark:text-white 
-      p-2 rounded transition-colors duration-300 fade-slide
+      p-2 rounded transition-colors duration-300
     `;
     li.innerHTML = `
-      ${tx.desc} <span>Rp${tx.amount}</span>
+      ${tx.desc} <span>Rp${tx.amount.toLocaleString()}</span>
       <button onclick="removeTx(${index})" class="ml-2 text-gray-500 hover:text-red-500">❌</button>
     `;
     list.appendChild(li);
@@ -64,12 +64,16 @@ function updateUI() {
     else totalExpense += Math.abs(tx.amount);
   });
 
-  animateNumber(balance, parseInt(balance.textContent.replace(/\D/g, '')) || 0, total);
-  animateNumber(income, parseInt(income.textContent.replace(/\D/g, '')) || 0, totalIncome);
-  animateNumber(expense, parseInt(expense.textContent.replace(/\D/g, '')) || 0, totalExpense);
+  animateNumber(balance, getNumber(balance.textContent), total);
+  animateNumber(income, getNumber(income.textContent), totalIncome);
+  animateNumber(expense, getNumber(expense.textContent), totalExpense);
 
   renderChart(totalIncome, totalExpense);
   localStorage.setItem('transactions', JSON.stringify(transactions));
+}
+
+function getNumber(text) {
+  return parseInt(text.replace(/[^\d]/g, '')) || 0;
 }
 
 function animateNumber(el, start, end, duration = 300) {
@@ -78,7 +82,7 @@ function animateNumber(el, start, end, duration = 300) {
     if (!startTime) startTime = timestamp;
     const progress = Math.min((timestamp - startTime) / duration, 1);
     const value = Math.floor(progress * (end - start) + start);
-    el.textContent = `Rp${value}`;
+    el.textContent = `Rp${value.toLocaleString()}`;
     if (progress < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
@@ -86,7 +90,7 @@ function animateNumber(el, start, end, duration = 300) {
 
 function renderChart(incomeAmount, expenseAmount) {
   const ctx = document.getElementById('pieChart').getContext('2d');
-  if (pieChart) pieChart.destroy(); // clear chart if exists
+  if (pieChart) pieChart.destroy();
 
   pieChart = new Chart(ctx, {
     type: 'pie',
@@ -112,16 +116,5 @@ function renderChart(incomeAmount, expenseAmount) {
     }
   });
 }
-const themeToggle = document.getElementById('theme-toggle');
 
-if (localStorage.getItem('theme') === 'dark') {
-  document.body.classList.add('dark');
-  themeToggle.textContent = '🌞 Light Mode';
-}
-
-themeToggle.addEventListener('click', () => {
-  document.body.classList.toggle('dark');
-  const isDark = document.body.classList.contains('dark');
-  themeToggle.textContent = isDark ? '🌞 Light Mode' : '🌙 Dark Mode';
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
-});
+window.addEventListener('load', updateUI);
