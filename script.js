@@ -9,18 +9,20 @@ const form = document.getElementById('form');
 let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 let pieChart;
 
-// Load theme preference
+
+// Aktifkan dark mode jika user pernah pilih
 if (localStorage.getItem('theme') === 'dark') {
   document.body.classList.add('dark');
   themeToggle.textContent = '🌞 Light Mode';
 }
 
+// Tombol toggle diklik
 themeToggle.addEventListener('click', () => {
-  document.body.classList.toggle('dark');
-  const isDark = document.body.classList.contains('dark');
+  const isDark = document.body.classList.toggle('dark');
   themeToggle.textContent = isDark ? '🌞 Light Mode' : '🌙 Dark Mode';
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
 });
+
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
